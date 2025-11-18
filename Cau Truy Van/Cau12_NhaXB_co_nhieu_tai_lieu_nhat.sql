@@ -1,4 +1,4 @@
- -- 12. Tìm nhà xuất bản có nhiều tài liệu nhất
+ -- 12. Tìm nhà xuất bản xb nhiều tài liệu nhất
 SELECT 
     nxb.tenXB,
     COUNT(tl.maTaiLieu) AS SoTaiLieu

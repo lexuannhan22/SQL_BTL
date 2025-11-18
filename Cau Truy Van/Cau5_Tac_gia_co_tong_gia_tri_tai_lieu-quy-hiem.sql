@@ -1,4 +1,4 @@
--- 1. Tác giả có tổng giá trị tài liệu quý hiếm cao nhất đơn vị tính là triệu đồng
+-- 5. Tính tổng giá trị tài liệu quý hiếm của từng tác giả đơn vị tính là triệu đồng
 WITH GiaTriTacGia AS (
     SELECT 
         tg.maTacGia,
@@ -12,5 +12,4 @@ WITH GiaTriTacGia AS (
 )
 SELECT tenTacGia AS ten_tac_gia, (tongGiaTri / 1000000.0) AS "tong_gia_tri(don vi: trieu dong)"
 FROM GiaTriTacGia
-ORDER BY tongGiaTri DESC
-LIMIT 1;
+ORDER BY tongGiaTri DESC;

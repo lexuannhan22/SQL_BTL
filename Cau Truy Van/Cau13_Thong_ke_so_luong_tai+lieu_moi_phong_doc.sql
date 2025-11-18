@@ -1,4 +1,4 @@
--- 13. Thống kê số lượng tài liệu mỗi phòng đọc đang quản lý
+-- 13. Thống kê số lượng tài liệu trong mỗi phòng đọc đang quản lý
 (SELECT 
     pd.tenPD,
     'Tai Lieu quy hiem' AS LoaiTaiLieu,
