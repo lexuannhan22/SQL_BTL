@@ -1,30 +1,19 @@
--- 6. Tài liệu bị mượn quá hạn và chưa trả, hiển thị thêm số ngày trễ hạn
-SET SQL_SAFE_UPDATES = 0;
-
-UPDATE chitietmuon
-SET trangThai = 'Quá hạn'
-WHERE trangThai = 'Đang mượn' and hanTra < NOW();
-
+-- 6. Tài liệu bị mượn quá hạn chưa trả, hiển thị thêm số ngày trễ hạn
 SELECT 
-    dg.tenDocGia,
+    tl.maTaiLieu,
     tl.tenTaiLieu,
-    ct.ngayMuon,
-    ct.hanTra,
-    ABS(DATEDIFF(NOW(), ct.hanTra)) AS soNgayTreHan,
-    CASE
-        WHEN ABS(DATEDIFF(NOW(), ct.hanTra)) > 7 THEN 'Cảnh báo đỏ'
-        WHEN ABS(DATEDIFF(NOW(), ct.hanTra)) > 5 THEN 'Cảnh báo vàng'
-        ELSE 'Nhắc nhẹ'
-    END AS mucDoViPham
-FROM
-    ChiTietMuon ct
-        JOIN
-    DocGia dg ON ct.maDG = dg.maDG
-        JOIN
-    BanIn bi ON ct.maPhieuMuon = bi.maPhieuMuon
-        JOIN
-    TaiLieu tl ON bi.maTaiLieu_S = tl.maTaiLieu
-WHERE
-    ct.trangThai = 'Quá hạn'
+    b.maBanIn,
+    ctm.hanTra,
+    DATEDIFF(CURRENT_DATE, ctm.hanTra) AS soNgayTreHan,
+    dg.maDocGia,
+    dg.tenDocGia,
+    pm.maPhieuMuon
+FROM TaiLieu tl
+JOIN Sach s ON tl.maTaiLieu = s.maTaiLieu_S
+JOIN BanIn b ON s.maTaiLieu_S = b.maTaiLieu_S
+JOIN ChiTietMuon ctm ON b.maBanIn = ctm.maBanIn
+JOIN PhieuMuon pm ON ctm.maPhieuMuon = pm.maPhieuMuon
+JOIN DocGia dg ON pm.maDocGia = dg.maDocGia
+WHERE ctm.hanTra < CURRENT_DATE
+  AND (ctm.trangThai IS NULL OR ctm.trangThai = 0)
 ORDER BY soNgayTreHan DESC;
-

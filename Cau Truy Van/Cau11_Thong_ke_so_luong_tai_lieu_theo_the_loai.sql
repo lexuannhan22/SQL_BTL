@@ -1,4 +1,4 @@
---  3. Thống kê số lượng tài liệu theo thể loại và tình trạng bảo quản
+-- 11. Thống kê số lượng tài liệu theo thể loại và tình trạng bảo quản
 SELECT 
     tl.theLoai,
     tlqh.tinhTrangBaoQuan,
