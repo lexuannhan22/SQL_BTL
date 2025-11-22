@@ -1,4 +1,4 @@
--- 6. Tài liệu bị mượn quá hạn chưa trả, hiển thị thêm số ngày trễ hạn
+-- 6. Bản in bị mượn quá hạn chưa trả, hiển thị thêm số ngày trễ hạn
 SELECT 
     tl.maTaiLieu,
     tl.tenTaiLieu,
@@ -15,5 +15,4 @@ JOIN ChiTietMuon ctm ON b.maBanIn = ctm.maBanIn
 JOIN PhieuMuon pm ON ctm.maPhieuMuon = pm.maPhieuMuon
 JOIN DocGia dg ON pm.maDocGia = dg.maDocGia
 WHERE ctm.hanTra < CURRENT_DATE
-  AND (ctm.trangThai IS NULL OR ctm.trangThai = 0)
 ORDER BY soNgayTreHan DESC;
