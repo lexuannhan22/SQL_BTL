@@ -6,7 +6,6 @@ SELECT
 FROM DocGia dg
 JOIN PhieuMuon pm ON dg.maDocGia = pm.maDocGia
 JOIN ChiTietMuon ctm ON pm.maPhieuMuon = ctm.maPhieuMuon
-WHERE ctm.hanTra < CURRENT_DATE
-  AND (ctm.trangThai IS NULL OR ctm.trangThai != 'Đã trả')
+WHERE ctm.hanTra < CURRENT_DATE OR ctm.trangThai = 'Quá hạn'
 GROUP BY dg.maDocGia, dg.tenDocGia
 ORDER BY soLuongSachChuaTra DESC;

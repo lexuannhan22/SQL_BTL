@@ -5,5 +5,12 @@ SELECT
 FROM nhaxuatban nxb
 JOIN tailieu tl ON nxb.maXB = tl.maXB
 GROUP BY nxb.tenXB
-ORDER BY SoTaiLieu DESC
-LIMIT 1;
+HAVING COUNT(tl.maTaiLieu) = (
+	SELECT MAX(tmp.soLan)
+    FROM (
+		SELECT COUNT(tl.maTaiLieu) AS soLan
+        FROM nhaxuatban nxb
+        JOIN tailieu tl ON nxb.maXB = tl.maXB
+        GROUP BY nxb.maXB
+    ) AS tmp
+);

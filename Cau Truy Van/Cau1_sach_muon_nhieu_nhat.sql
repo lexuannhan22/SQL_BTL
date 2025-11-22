@@ -1,4 +1,4 @@
--- 1.	Liệt kê các sách được mượn nhiều nhất
+-- 1.	Liệt kê các bản in sách được mượn nhiều nhất
 SELECT 
     b.maBanIn,
     tl.tenTaiLieu AS tenSach,

@@ -1,21 +1,37 @@
 -- 7. Nhân viên phụ trách nhiều lượt mượn nhất theo từng quý
-WITH RankedNhanVien AS (
-    SELECT 
-        YEAR(ctm.ngayMuon) AS Nam,
-        QUARTER(ctm.ngayMuon) AS Quy,
-        nv.maNhanVien,
-        nv.tenNhanVien,
-        COUNT(DISTINCT pm.maPhieuMuon) AS SoLuotMuon,
-        RANK() OVER (
-            PARTITION BY YEAR(ctm.ngayMuon), QUARTER(ctm.ngayMuon) 
-            ORDER BY COUNT(DISTINCT pm.maPhieuMuon) DESC
-        ) AS XepHang
-    FROM ChiTietMuon ctm
-    JOIN PhieuMuon pm ON ctm.maPhieuMuon = pm.maPhieuMuon
-    JOIN NhanVien nv ON pm.maNhanVien = nv.maNhanVien
-    GROUP BY YEAR(ctm.ngayMuon), QUARTER(ctm.ngayMuon), nv.maNhanVien, nv.tenNhanVien
+WITH ThongKeNhanVienPhuTrachTheoTungQuy AS (
+  SELECT 
+    nv.maNhanVien,
+    nv.tenNhanVien AS tenNhanVien,
+    CASE 
+      WHEN MONTH(ctm.ngayMuon) BETWEEN 1 AND 3 THEN 'Quý 1'
+      WHEN MONTH(ctm.ngayMuon) BETWEEN 4 AND 6 THEN 'Quý 2'
+      WHEN MONTH(ctm.ngayMuon) BETWEEN 7 AND 9 THEN 'Quý 3'
+      ELSE 'Quý 4'
+    END AS quyTrongNam,
+    YEAR(ctm.ngayMuon) AS nam,
+    COUNT(*) AS soLanPhuTrach
+  FROM nhanvien nv
+  JOIN phieumuon pm ON nv.maNhanVien = pm.maNhanVien
+  JOIN chitietmuon ctm ON ctm.maPhieuMuon = pm.maPhieuMuon
+  GROUP BY nv.maNhanVien, nv.tenNhanVien,
+           CASE 
+             WHEN MONTH(ctm.ngayMuon) BETWEEN 1 AND 3 THEN 'Quý 1'
+             WHEN MONTH(ctm.ngayMuon) BETWEEN 4 AND 6 THEN 'Quý 2'
+             WHEN MONTH(ctm.ngayMuon) BETWEEN 7 AND 9 THEN 'Quý 3'
+             ELSE 'Quý 4'
+           END,
+           YEAR(ctm.ngayMuon)
 )
-SELECT Nam, Quy, maNhanVien, tenNhanVien, SoLuotMuon
-FROM RankedNhanVien
-WHERE XepHang = 1
-ORDER BY Nam, Quy;
+SELECT 
+  t.quyTrongNam,
+  m.nam,
+  t.tenNhanVien,
+  t.soLanPhuTrach
+FROM ThongKeNhanVienPhuTrachTheoTungQuy t, (
+  SELECT quyTrongNam, nam, MAX(soLanPhuTrach) AS soLanPhuTrachNhieuNhatQuy
+  FROM ThongKeNhanVienPhuTrachTheoTungQuy
+  GROUP BY quyTrongNam, nam
+) m
+WHERE t.quyTrongNam = m.quyTrongNam AND t.soLanPhuTrach = m.soLanPhuTrachNhieuNhatQuy
+ORDER BY t.quyTrongNam, m.nam;
